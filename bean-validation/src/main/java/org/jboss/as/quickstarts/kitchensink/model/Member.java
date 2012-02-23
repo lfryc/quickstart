@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.persistence.UniqueConstraint;
@@ -17,7 +19,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name="MEMBER_BEAN_VALIDATION", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "MEMBER_BEAN_VALIDATION", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class Member implements Serializable {
     /** Default value included to remove warning. Remove or modify at will. **/
     private static final long serialVersionUID = 1L;
@@ -36,11 +38,12 @@ public class Member implements Serializable {
     @Email
     private String email;
 
-    @NotNull
-    @Size(min = 10, max = 12)
-    @Digits(fraction = 0, integer = 12)
+    @Size(min = 10, max = 12, message = "Phone number must be 10-12 digits")
+    @Digits(fraction = 0, integer = 12, message = "Phone number must be 10-12 digits")
     @Column(name = "phone_number")
     private String phoneNumber;
+    
+    private String passwordHash;
 
     public Long getId() {
         return id;
@@ -72,5 +75,13 @@ public class Member implements Serializable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+    
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }
