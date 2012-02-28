@@ -67,7 +67,7 @@ public class MemberValidationTest {
         Member member = new Member();
         Set<ConstraintViolation<Member>> violations = validator.validate(member);
 
-        Assert.assertEquals("Four violations were found", 4, violations.size());
+        Assert.assertEquals("Four violations were expected", 3, violations.size());
     }
 
     /**
@@ -117,7 +117,7 @@ public class MemberValidationTest {
         Set<ConstraintViolation<Member>> violations = validator.validate(member);
 
         Assert.assertEquals("One violation was found", 1, violations.size());
-        Assert.assertEquals("Phone number was invalid", "size must be between 10 and 12", violations.iterator().next()
+        Assert.assertEquals("Phone number was invalid", "Phone number must be 10-12 digits", violations.iterator().next()
                 .getMessage());
     }
 

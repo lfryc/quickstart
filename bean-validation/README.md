@@ -1,20 +1,48 @@
 bean-validation: Bean Validation via Arquillian Example
 =======================================================
-Author: Karel Piwko <kpiwko@redhat.com>
+Author: Lukas Fryc <https://community.jboss.org/people/lfryc>
 
 What is it?
 -----------
 
 This is your project! It's a sample, Maven 3 project to help you
 get your foot in the door developing with Java EE 6 on JBoss AS 7 or JBoss Enterprise Application Platform 6. 
-This project is setup to allow you to use CDI 1.0, JPA 2.0 and Bean Validation 1.0. 
-It includes a persistence unit and some sample persistence code to help 
-you get your feet wet with database access in enterprise Java. 
+This project is setup to allow you to use JSF 2.0, RichFaces 4.2, CDI 1.0, JPA 2.0 and Bean Validation 1.0. 
 
-It does not contain an user interface layer. The main purpose of the project is 
-to show you how to test Bean Validation with Arquillian. If you want to see an
-example how to test Bean Validation via an user interface, check out Kitchensink
-example available at <https://github.com/jbossas/quickstart/tree/master/kitchensink>.
+It consists from one entity - Member - which is annotated with JSR-303 (Bean Validation)
+constraints. These constraints are in typical applications checked on several places:
+
+* as database constraints
+* on the persistence layer
+* once entity enters view layer (using JSF / Bean Validation integration)
+* on the client side (using RichFaces 4.2 - Client Side Validation)
+
+That all in the "define once - check in each layer" manner.
+
+
+However this sample does not contain any persistence layer, since it shows mainly integration
+of RichFaces, JSF and Bean Validation.
+
+There are tests for Bean Validation constraints for Member entity which allows you to check
+implementation without necessity to check the application. These tests are written using Arquillian.
+
+
+Application Theme
+-----------------
+
+Application contains view layer written in JSF and RichFaces and shows AJAX-based wizard for new
+member registration. Each member needs to fill in these data in separated screens:
+
+* e-mail
+* name and phone
+* password and its confirmation
+* confirmation of all inserted data
+
+Once user is successfully registered, he is redirected to initial page with message
+that he has been successfully registered.
+
+The validation is done using client-side validation where possibly. There is also object-graph
+validation for password confirmation using @AssertTrue annotation.
 
 System requirements
 -------------------
@@ -22,8 +50,92 @@ System requirements
 All you need to build this project is Java 6.0 (Java SDK 1.6) or better, Maven
 3.0 or better.
 
+Building WAR deployment with Maven
+===============================
+
+To build the application, the only you need is trigger Maven build from
+command-line:
+
+    mvn clean package
+    
+This command will build the WAR archive in target/richfaces-validation.war.
+
+
+Deploying the WAR to the JBoss AS
+=================================
+
+To deploy the application to JBoss AS 7, you needs just copy the built WAR
+to the JBOSS_HOME/standalone/deployments directory.
+
+There is Maven plugin which makes this task even simpler:
+
+Let's start the JBoss AS and trigger following JBoss AS Maven plugin from
+inside the project (you need to built the WAR first, see above):
+
+    mvn jboss-as:deploy
+    
+After successful deploy, you should see server log output similar to following:
+
+    JBAS018210: Registering web context: /richfaces-validation
+    JBAS018559: Deployed "richfaces-validation.war"
+
+You can access the running application on URL
+    
+    http://localhost:8080/richfaces-validation/
+
+You can un-deploy the application by deleting the WAR from deployments
+directory or you can use the JBoss AS Maven plugin again:
+
+    mvn jboss-as:undeploy
+    
+In this case, you should see following output in server console:
+
+    JBAS018558: Undeployed "richfaces-validation.war"
+    
+    
+Importing the project into an IDE
+=================================
+
+If you created the project using the Maven archetype wizard in your IDE
+(Eclipse, NetBeans or IntelliJ IDEA), then there is nothing to do. You should
+already have an IDE project.
+
+If you created the project from the command-line using archetype:generate, then
+you need to import the project into your IDE. If you are using NetBeans 6.8 or
+IntelliJ IDEA 9, then all you have to do is open the project as an existing
+project. Both of these IDEs recognize Maven projects natively.
+ 
+Detailed instructions for using Eclipse with JBoss AS 7 are provided in the 
+JBoss AS 7 Getting Started Guide for Developers.
+
+
+Running the project from IDE
+============================
+
+To enhance your development turn-around, it's recommended to use IDE to build
+and deploy the project.
+
+Running the project from JBDS
+-----------------------------
+
+At first, you need to make sure you have setup the JBoss AS server instance
+setup in JBDS and running.
+
+Then select your project and choose Run > Run As > Run on Server
+in the context menu and select JBoss AS 7 server instance.
+
+After successful deploy, you should see server log output similar to following:
+
+    JBAS018210: Registering web context: /richfaces-validation
+    JBAS018559: Deployed "richfaces-validation.war"
+
+You can access the running application on URL
+    
+    http://localhost:8080/richfaces-validation/
+
+
 Running the Arquillian tests
-----------------------------
+============================
 
 By default, tests are configured to be skipped. The reason is that the sample
 test is an Arquillian test, which requires the use of a container. You can select either
