@@ -11,7 +11,6 @@ import javax.inject.Qualifier;
  * Qualifier for current task
  *
  * @author Lukas Fryc
- *
  */
 @Qualifier
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })

@@ -11,7 +11,6 @@ import javax.faces.context.Flash;
  * Provides common resources used across whole application
  * 
  * @author Lukas Fryc
- * 
  */
 public class Resources {
 

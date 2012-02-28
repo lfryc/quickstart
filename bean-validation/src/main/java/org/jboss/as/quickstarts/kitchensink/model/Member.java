@@ -7,17 +7,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.AssertTrue;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+/**
+ * <p>Member entity which contains JSR-303 (Bean Validation) annotations.</p>
+ * 
+ * <p>These annotations gives constraints over what can be defined in entity attributes.</p>
+ *
+ * @author Karel Piwko
+ */
 @Entity
 @Table(name = "MEMBER_BEAN_VALIDATION", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class Member implements Serializable {

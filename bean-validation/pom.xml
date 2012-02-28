@@ -46,7 +46,8 @@
                 <scope>import</scope>
             </dependency>
             
-            <!-- TODO -->
+            <!-- RichFaces defines own Bill of Materials including dependencies which are not part 
+                 of Java EE 6 API -->
             <dependency>
                 <groupId>org.richfaces</groupId>
                 <artifactId>richfaces-bom</artifactId>
@@ -102,7 +103,7 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- TODO -->
+        <!-- Import RichFaces runtime dependencies -->
         <dependency>
             <groupId>org.richfaces.ui</groupId>
             <artifactId>richfaces-components-ui</artifactId>
