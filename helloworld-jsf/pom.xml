@@ -24,6 +24,9 @@
       <!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
          resources, i.e. build is platform dependent! -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      
+      <version.arquillian.core>1.0.0.Final</version.arquillian.core>
+      <version.arquillian.drone>1.0.0.Final</version.arquillian.drone>
    </properties>
 
    <repositories>
@@ -75,6 +78,24 @@
               <type>pom</type>
               <scope>import</scope>
          </dependency>
+         
+        <!-- Arquillian dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${version.arquillian.core}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+
+        <!-- Arquillian Drone dependencies and Selenium dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-bom</artifactId>
+            <version>${version.arquillian.drone}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
 
       </dependencies>
    </dependencyManagement>
@@ -116,6 +137,40 @@
          <artifactId>richfaces-components-ui</artifactId>
       </dependency>
 
+        <!-- JSFUnit.NG -->
+        <dependency>
+            <groupId>jsfunitng</groupId>
+            <artifactId>jsfunitng</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Arquillian Graphene -->
+        <dependency>
+            <groupId>org.jboss.arquillian.graphene</groupId>
+            <artifactId>graphene-webdriver</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+            
+        <!-- Arquillian JUnit -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+    
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+    
+        
+
    </dependencies>
 
    <build>
@@ -140,6 +195,26 @@
          </plugin>
       </plugins>
    </build>
+   
+   <profiles>
+        <profile>
+            <id>jbossas-remote-7</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.spec</groupId>
+                    <artifactId>jboss-javaee-6.0</artifactId>
+                    <version>1.0.0.Final</version>
+                    <type>pom</type>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
+                    <version>7.1.1.Final</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>
 
