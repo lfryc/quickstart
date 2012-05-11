@@ -19,8 +19,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.net.URL;
+
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -39,22 +43,28 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 @RunWith(Arquillian.class)
-public class ClientTest {
+@SuppressWarnings("serial")
+public class ClientServerTest {
 
     @Drone
     RemoteWebDriver browser;
 
     @ArquillianResource
     URL contextPath;
+    
 
     @Deployment
     public static WebArchive createDeployment() {
 
         return ShrinkWrap.create(WebArchive.class, "jsf-test.war").addClasses(RichBean.class)
                 .addAsWebResource(new File("src/main/webapp/index.xhtml"))
+                .addAsWebInfResource(new File("src/main/webapp/WEB-INF/beans.xml"))
                 .addAsWebResource(new File("src/main/webapp/templates/template.xhtml"), "templates/template.xhtml")
                 .addAsWebInfResource(new File("src/main/webapp/WEB-INF/faces-config.xml"));
     }
@@ -62,33 +72,30 @@ public class ClientTest {
     @Test
     @RunAsClient
     public void test() {
+        browser.navigate().to(contextPath + "index.jsf");
+
         Warp.execute(new ClientAction() {
             public void action() {
-                browser.navigate().to(contextPath + "index.jsf");
+                WebElement nameInput = browser.findElement(By.id("helloWorldJsf:nameInput"));
+                nameInput.sendKeys("X");
             }
-        }).verify(new JsfAssertion());
+        }).verify(new NameChangedToX());
 
     }
 
-    @SuppressWarnings("serial")
-    public static class JsfAssertion implements ServerAssertion {
+    public static class NameChangedToX implements ServerAssertion {
 
-        @BeforeServlet
-        public void test() {
-            System.out.println("before servlet");
+        @Inject
+        RichBean richBean;
+
+        @BeforePhase(Phase.UPDATE_MODEL_VALUES)
+        public void initial_state_havent_changed_yet() {
+            assertEquals("John", richBean.getName());
         }
 
-        @BeforePhase(Phase.RENDER_RESPONSE)
-        public void beforeRender() {
-            System.out.println("before render");
-
+        @AfterPhase(Phase.UPDATE_MODEL_VALUES)
+        public void changed_input_value_has_been_applied() {
+            assertEquals("JohnX", richBean.getName());
         }
-
-        @AfterPhase(Phase.RENDER_RESPONSE)
-        public void afterRender() {
-            System.out.println("after render");
-
-        }
-
     }
 }
